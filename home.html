@@ -1,0 +1,807 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <title>Smart Home Dashboard</title>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      /* Custom scrollbar for vertical left nav */
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background-color: rgba(255 255 255 / 0.2);
+        border-radius: 3px;
+      }
+    </style>
+  </head>
+  <body
+    class="min-h-screen bg-[url('https://wallpapercave.com/wp/88kFKFx.jpg')] bg-center bg-cover flex items-center justify-center p-4"
+  >
+    <div
+      class="max-w-[1300px] w-full bg-[rgba(255,255,255,0.12)] backdrop-blur-[12px] rounded-2xl p-6 grid grid-cols-[48px_1fr] gap-6 text-white select-none"
+    >
+      <!-- Left vertical nav -->
+      <nav
+        aria-label="Sidebar"
+        class="flex flex-col items-center space-y-8 bg-[rgba(255,255,255,0.12)] rounded-xl py-6"
+        style="width: 48px"
+      >
+        <button
+          aria-label="Dashboard"
+          class="text-white text-xl hover:text-white/80"
+          title="Dashboard"
+        >
+          <i class="fas fa-th-large"> </i>
+        </button>
+        <button
+          aria-label="Search"
+          class="text-white text-xl hover:text-white/80"
+          title="Search"
+        >
+          <i class="fas fa-search"> </i>
+        </button>
+        <button
+          aria-label="TV"
+          class="text-white text-xl hover:text-white/80"
+          title="TV"
+        >
+          <i class="fas fa-tv"> </i>
+        </button>
+        <button
+          aria-label="Settings"
+          class="text-white text-xl hover:text-white/80"
+          title="Settings"
+        >
+          <i class="fas fa-cog"> </i>
+        </button>
+        <button
+          aria-label="Users"
+          class="text-white text-xl hover:text-white/80"
+          title="Users"
+        >
+          <i class="fas fa-users"> </i>
+        </button>
+      </nav>
+      <!-- Main content -->
+      <main class="flex flex-col space-y-6">
+        <!-- Header top -->
+        <header
+          class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+        >
+          <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
+            <h1 class="text-white font-semibold text-xl">Welcome, Tuguldur</h1>
+            <nav class="flex flex-wrap gap-2 mt-2 sm:mt-0">
+              <button
+                aria-current="page"
+                class="bg-black bg-opacity-70 text-white text-xs rounded-full px-3 py-1 font-semibold"
+              >
+                Home
+              </button>
+              <button
+                class="bg-black bg-opacity-70 text-white text-xs rounded-full px-3 py-1 font-semibold"
+              >
+                Living Room
+              </button>
+              <button
+                class="bg-black bg-opacity-70 text-white text-xs rounded-full px-3 py-1 font-semibold"
+              >
+                Kitchen
+              </button>
+              <button
+                class="bg-black bg-opacity-70 text-white text-xs rounded-full px-3 py-1 font-semibold"
+              >
+                Livestock pen
+              </button>
+            </nav>
+          </div>
+          <div class="flex items-center space-x-4">
+            <div class="relative">
+              <input
+                aria-label="Search type of keywords"
+                class="rounded-lg bg-[rgba(255,255,255,0.15)] placeholder-white/60 text-white text-xs pl-3 pr-8 py-1 focus:outline-none focus:ring-1 focus:ring-white/50"
+                placeholder="Search type of keywords"
+                type="search"
+              />
+              <i
+                class="fas fa-search absolute right-2 top-1/2 -translate-y-1/2 text-white/60 text-xs pointer-events-none"
+              >
+              </i>
+            </div>
+            <!-- <button aria-label="Help" class="text-white text-lg hover:text-white/80" title="Help">
+       <i class="fas fa-question-circle">
+       </i>
+      </button>
+      <button aria-label="Notifications" class="text-white text-lg hover:text-white/80 relative" title="Notifications">
+       <i class="fas fa-bell">
+       </i>
+       <span class="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full">
+       </span>
+      </button> -->
+            <button
+              aria-label="User menu"
+              class="flex items-center space-x-2 text-white text-sm font-semibold hover:text-white/80"
+              title="User menu"
+            >
+              <img
+                alt="Profile picture of Azna, a woman with dark hair"
+                class="rounded-full w-8 h-8 object-cover"
+                height="32"
+                loading="lazy"
+                src="https://khangunt.rf.gd/img/419676638_1389083395043854_1946122329453667204_n.jpg"
+                width="32"
+              />
+              <span> Tuguldur </span>
+              <i class="fas fa-chevron-down text-xs"> </i>
+            </button>
+          </div>
+        </header>
+        <!-- Dashboard grid -->
+        <section
+          aria-label="Dashboard widgets"
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+        >
+          <!-- CCTV Camera -->
+          <section
+            aria-label="CCTV Camera"
+            class="bg-[rgba(255,255,255,0.15)] rounded-xl p-4 flex flex-col space-y-3 h-64"
+          >
+            <div class="flex justify-between items-center">
+              <h2 class="text-white font-semibold text-sm">CCTV Camera</h2>
+            </div>
+            <img
+              alt="Living room interior with kitchen, chairs, and window, CCTV camera live view"
+              class="rounded-lg object-cover w-full h-[180px]"
+              height="160"
+              loading="lazy"
+              src="https://th.bing.com/th/id/R.05db47a1dd351a464adeba7d216a419d?rik=kdBaus3961dgAA&pid=ImgRaw&r=0"
+              width="320"
+            />
+          </section>
+          <!-- Music -->
+          <section
+            aria-label="Music player"
+            class="bg-[rgba(255,255,255,0.15)] rounded-xl p-4 flex flex-col space-y-4 relative items-center"
+          >
+            <h2 class="text-white font-semibold text-sm self-start">Music</h2>
+
+            <div
+              class="absolute top-4 right-4 bg-green-600 rounded-full w-6 h-6 flex items-center justify-center"
+            >
+              <i class="fab fa-spotify text-white text-xs"> </i>
+            </div>
+
+            <img
+              alt="Album cover of Pain by Ryan Jones, showing a person with a red background"
+              class="rounded-lg w-24 h-24 object-cover"
+              height="128"
+              loading="lazy"
+              src="https://storage.googleapis.com/a1aa/image/2ea5262a-f8c7-4809-0b4b-a1b6403eeb18.jpg"
+              width="128"
+            />
+
+            <div class="flex flex-col items-center w-full">
+              <span class="text-white text-xs font-semibold text-center">
+                Pain by Ryan Jones
+              </span>
+
+              <div
+                class="flex items-center space-x-2 text-white/70 text-[10px] mt-1 w-full px-2"
+              >
+                <span>2:23</span>
+                <div class="flex-1 bg-white/20 rounded h-1 relative">
+                  <div
+                    class="bg-purple-600 h-1 rounded"
+                    style="width: 55%"
+                  ></div>
+                </div>
+                <span>4:02</span>
+              </div>
+
+              <div class="flex items-center space-x-4 mt-2 text-white text-xs">
+                <button aria-label="Previous track" title="Previous track">
+                  <i class="fas fa-backward"> </i>
+                </button>
+                <button
+                  aria-label="Play"
+                  class="bg-white text-purple-700 rounded-full w-6 h-6 flex items-center justify-center"
+                  title="Play"
+                >
+                  <i class="fas fa-play"> </i>
+                </button>
+                <button aria-label="Next track" title="Next track">
+                  <i class="fas fa-forward"> </i>
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <!-- Door Auto Opener and Closer -->
+          <section
+            aria-label="Door Auto Opener and Closer"
+            class="bg-[rgba(255,255,255,0.15)] rounded-xl p-3 flex flex-col space-y-2 h-64 text-white text-xs"
+          >
+            <div class="flex items-center space-x-2">
+              <i class="fas fa-door-open text-sm"></i>
+              <span class="font-semibold"> Door </span>
+              <label
+                class="ml-auto relative inline-flex items-center cursor-pointer"
+                for="door-toggle"
+              >
+                <input
+                  aria-checked="true"
+                  id="door-toggle"
+                  class="sr-only peer"
+                  type="checkbox"
+                  onclick="toggleDoor(this.checked)"
+                />
+                <div
+                  class="w-9 h-5 bg-gray-400 rounded-full peer peer-checked:bg-green-600 peer-focus:ring-2 peer-focus:ring-green-300 transition"
+                ></div>
+                <div
+                  class="absolute left-0.5 top-0.5 bg-white w-4 h-4 rounded-full transition peer-checked:translate-x-4"
+                ></div>
+              </label>
+            </div>
+            <div class="flex justify-between items-center">
+              <span> Open </span>
+              <span> Closed </span>
+            </div>
+          </section>
+          <!-- Smart Cleaner -->
+          <section
+            aria-label="Smart Cleaner"
+            class="bg-[rgba(255,255,255,0.15)] rounded-xl p-3 flex flex-col space-y-2 h-64 text-white text-xs"
+          >
+            <div class="flex items-center space-x-2">
+              <i class="fas fa-robot text-sm"> </i>
+              <span class="font-semibold"> Smart Cleaner </span>
+              <label
+                class="ml-auto relative inline-flex items-center cursor-pointer"
+                for="cleaner-toggle"
+              >
+                <input
+                  aria-checked="true"
+                  id="cleaner-toggle"
+                  class="sr-only peer"
+                  type="checkbox"
+                  onclick="toggleCleaner(this.checked)"
+                />
+                <div
+                  class="w-9 h-5 bg-gray-400 rounded-full peer peer-checked:bg-green-600 peer-focus:ring-2 peer-focus:ring-green-300 transition"
+                ></div>
+                <div
+                  class="absolute left-0.5 top-0.5 bg-white w-4 h-4 rounded-full transition peer-checked:translate-x-4"
+                ></div>
+              </label>
+            </div>
+            <img
+              alt="Smart cleaner robot vacuum, white round device"
+              class="w-full object-contain"
+              height="24"
+              loading="lazy"
+              src="https://th.bing.com/th/id/OIP.Ot4Dy7_GrDB0MfixcnH-SAHaFj?cb=iwc2&rs=1&pid=ImgDetMain"
+              width="32"
+            />
+          </section>
+          <!-- Light -->
+          <section
+            aria-label="Light control"
+            class="bg-[rgba(255,255,255,0.15)] rounded-xl p-4 flex flex-col gap-y-4"
+          >
+            <div class="flex items-center space-x-2 mt-3">
+              <i class="fas fa-lightbulb text-white/80"> </i>
+              <span class="text-white font-semibold text-sm"> Light </span>
+              <label
+                class="ml-auto relative inline-flex items-center cursor-pointer"
+                for="light-toggle"
+              >
+                <input
+                  aria-checked="true"
+                  id="light-toggle"
+                  class="sr-only peer"
+                  type="checkbox"
+                  onclick="toggleLight(this.checked)"
+                />
+                <div
+                  class="w-9 h-5 bg-gray-400 rounded-full peer peer-checked:bg-green-600 peer-focus:ring-2 peer-focus:ring-green-300 transition"
+                ></div>
+                <div
+                  class="absolute left-0.5 top-0.5 bg-white w-4 h-4 rounded-full transition peer-checked:translate-x-4"
+                ></div>
+              </label>
+            </div>
+
+            <img
+              alt="Two copper pendant lamps hanging from ceiling, lit"
+              class="rounded-lg object-contain w-full h-[235px]"
+              height="128"
+              loading="lazy"
+              src="https://vakkerlight.com/cdn/shop/products/Signal_LED_Pendant_Light_2.jpg?v=1705802047"
+              width="128"
+            />
+          </section>
+
+          <!-- Air Conditioner -->
+          <section
+            aria-label="Air Conditioner"
+            class="bg-[rgba(255,255,255,0.15)] rounded-xl p-4 flex flex-col space-y-3"
+          >
+            <div class="flex justify-between items-center">
+              <h2 class="text-white font-semibold text-sm">Air Conditioner</h2>
+              <label
+                class="relative inline-flex items-center cursor-pointer"
+                for="ac-toggle"
+              >
+                <input
+                  aria-checked="true"
+                  id="ac-toggle"
+                  class="sr-only peer"
+                  type="checkbox"
+                  onclick="toggleAC(this.checked)"
+                />
+                <div
+                  class="w-11 h-6 bg-gray-400 rounded-full peer peer-checked:bg-green-600 peer-focus:ring-2 peer-focus:ring-green-300 transition"
+                ></div>
+                <div
+                  class="absolute left-0.5 top-0.5 bg-white w-5 h-5 rounded-full transition peer-checked:translate-x-5"
+                ></div>
+              </label>
+            </div>
+            <div class="text-white font-semibold text-4xl leading-none">
+              18°C
+            </div>
+            <div class="text-white text-xs opacity-70">Current Temperature</div>
+            <div class="flex flex-col space-y-2 mt-2">
+              <div class="flex items-center justify-between">
+                <span class="text-white text-xs opacity-70"> Mode </span>
+                <button
+                  class="bg-black bg-opacity-70 text-white text-xs rounded-md px-2 py-1"
+                >
+                  Cold
+                </button>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-white text-xs opacity-70">
+                  Auto turn on
+                </span>
+                <button
+                  class="bg-black bg-opacity-70 text-white text-xs rounded-md px-2 py-1"
+                >
+                  2:00 AM
+                </button>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-white text-xs opacity-70">
+                  Auto turn off
+                </span>
+                <button
+                  class="bg-black bg-opacity-70 text-white text-xs rounded-md px-2 py-1"
+                >
+                  9:00 AM
+                </button>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-white text-xs opacity-70"> Wind </span>
+                <button
+                  class="bg-black bg-opacity-70 text-white text-xs rounded-md px-2 py-1"
+                >
+                  High
+                </button>
+              </div>
+            </div>
+          </section>
+          <!-- Electricity Usage -->
+          <section
+            aria-label="Electricity Usage"
+            class="bg-[rgba(255,255,255,0.15)] rounded-xl p-4 flex flex-col space-y-3"
+          >
+            <div class="flex justify-between items-center">
+              <h2 class="text-white font-semibold text-sm">
+                Electricity Usage
+              </h2>
+              <div
+                class="flex items-center space-x-2 text-white text-xs opacity-70"
+              >
+                <span> Time: 32H </span>
+                <button
+                  aria-label="Sort"
+                  class="p-1 rounded hover:bg-white/20"
+                  title="Sort"
+                >
+                  <i class="fas fa-sort"> </i>
+                </button>
+                <button
+                  aria-label="Chart"
+                  class="p-1 rounded hover:bg-white/20"
+                  title="Chart"
+                >
+                  <i class="fas fa-chart-bar"> </i>
+                </button>
+                <button
+                  aria-label="Today"
+                  class="bg-black bg-opacity-70 rounded px-2 py-1"
+                  title="Today"
+                >
+                  Today
+                </button>
+                <button
+                  aria-label="More options"
+                  class="p-1 rounded hover:bg-white/20"
+                  title="More options"
+                >
+                  <i class="fas fa-ellipsis-h"> </i>
+                </button>
+              </div>
+            </div>
+            <!-- Chart container -->
+            <div
+              class="w-full h-40 bg-[rgba(0,0,0,0.1)] rounded-lg p-4 overflow-x-auto"
+            >
+              <div class="relative w-[480px]">
+                <svg
+                  aria-hidden="true"
+                  class="w-full h-full"
+                  role="img"
+                  viewbox="0 0 320 160"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <defs>
+                    <lineargradient
+                      id="line-gradient"
+                      x1="0"
+                      x2="0"
+                      y1="0"
+                      y2="1"
+                    >
+                      <stop
+                        offset="0%"
+                        stop-color="#7c3aed"
+                        stop-opacity="0.7"
+                      ></stop>
+                      <stop
+                        offset="100%"
+                        stop-color="#7c3aed"
+                        stop-opacity="0"
+                      ></stop>
+                    </lineargradient>
+                  </defs>
+                  <path
+                    d="M20 120 Q40 80 60 100 T100 90 T140 130 T180 80 T220 110 T260 70 T300 100"
+                    fill="none"
+                    stroke="#a78bfa"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                  ></path>
+                  <circle cx="20" cy="120" fill="#a78bfa" r="4"></circle>
+                  <circle cx="40" cy="80" fill="#a78bfa" r="4"></circle>
+                  <circle cx="60" cy="100" fill="#a78bfa" r="4"></circle>
+                  <circle cx="100" cy="90" fill="#a78bfa" r="4"></circle>
+                  <circle cx="140" cy="130" fill="#a78bfa" r="4"></circle>
+                  <circle cx="180" cy="80" fill="#a78bfa" r="4"></circle>
+                  <circle cx="220" cy="110" fill="#a78bfa" r="4"></circle>
+                  <circle cx="260" cy="70" fill="#a78bfa" r="4"></circle>
+                  <circle cx="300" cy="100" fill="#a78bfa" r="4"></circle>
+                </svg>
+                <div
+                  class="absolute top-12 left-[140px] bg-black bg-opacity-70 text-white text-xs rounded px-2"
+                  style="transform: translateX(-50%)"
+                >
+                  Electricity 35.02K wh
+                </div>
+                <div
+                  class="absolute bottom-2 text-white text-[10px] opacity-70 select-none"
+                >
+                  10am
+                </div>
+                <div
+                  class="absolute bottom-2 left-[50px] text-white text-[10px] opacity-70 select-none"
+                >
+                  11am
+                </div>
+                <div
+                  class="absolute bottom-2 left-[90px] text-white text-[10px] opacity-70 select-none"
+                >
+                  12am
+                </div>
+                <div
+                  class="absolute bottom-2 left-[130px] text-white text-[10px] opacity-70 select-none"
+                >
+                  01pm
+                </div>
+                <div
+                  class="absolute bottom-2 left-[170px] text-white text-[10px] opacity-70 select-none"
+                >
+                  02pm
+                </div>
+                <div
+                  class="absolute bottom-2 left-[210px] text-white text-[10px] opacity-70 select-none"
+                >
+                  03pm
+                </div>
+                <div
+                  class="absolute bottom-2 left-[250px] text-white text-[10px] opacity-70 select-none"
+                >
+                  04pm
+                </div>
+                <div
+                  class="absolute bottom-2 left-[290px] text-white text-[10px] opacity-70 select-none"
+                >
+                  05pm
+                </div>
+                <div
+                  class="absolute bottom-2 left-[330px] text-white text-[10px] opacity-70 select-none"
+                >
+                  06pm
+                </div>
+                <div
+                  class="absolute bottom-2 left-[370px] text-white text-[10px] opacity-70 select-none"
+                >
+                  07pm
+                </div>
+              </div>
+            </div>
+          </section>
+          <!-- Livestock Pen CCTV -->
+          <section
+            aria-label="Livestock Pen CCTV"
+            class="bg-[rgba(255,255,255,0.15)] rounded-xl p-4 flex flex-col space-y-3"
+          >
+            <div
+              class="flex justify-between items-center text-white text-xs opacity-70"
+            >
+              <div>
+                <span class="font-semibold text-white">Livestock Pen CCTV</span>
+                <div class="text-[9px] opacity-70">Live Feed</div>
+              </div>
+              <button
+                aria-label="Power"
+                class="text-white hover:text-white/80"
+                title="Power"
+              >
+                <i class="fas fa-power-off"></i>
+              </button>
+            </div>
+            <div class="relative w-full h-64">
+              <img
+                alt="CCTV camera view of the livestock pen"
+                class="rounded-lg object-cover w-full h-full"
+                loading="lazy"
+                src="https://ptes.org/wp-content/uploads/2019/11/SLCF-Corral-study-Tost-Mongolia-2014-2-Snow-leopards-Bayara-Agvaantseren-Conservation-Partner-PTES.jpg"
+              />
+            </div>
+          </section>
+          <!-- TV Control -->
+          <section
+            aria-label="TV Control"
+            class="bg-[rgba(255,255,255,0.15)] rounded-xl p-4 flex flex-col space-y-3"
+          >
+            <div class="flex justify-between items-center">
+              <h2 class="text-white font-semibold text-sm">TV</h2>
+              <label
+                class="relative inline-flex items-center cursor-pointer"
+                for="tv-toggle"
+              >
+                <input
+                  aria-checked="true"
+                  id="tv-toggle"
+                  class="sr-only peer"
+                  type="checkbox"
+                  onclick="toggleTV(this.checked)"
+                />
+                <div
+                  class="w-11 h-6 bg-gray-400 rounded-full peer peer-checked:bg-green-600 peer-focus:ring-2 peer-focus:ring-green-300 transition"
+                ></div>
+                <div
+                  class="absolute left-0.5 top-0.5 bg-white w-5 h-5 rounded-full transition peer-checked:translate-x-5"
+                ></div>
+              </label>
+            </div>
+            <div class="flex items-center justify-between space-x-3">
+              <img
+                alt="Intel logo blue oval"
+                class="rounded-md object-contain"
+                height="24"
+                loading="lazy"
+                src="https://storage.googleapis.com/a1aa/image/bf32b08b-ff8b-493c-87d9-08aa51e1ad60.jpg"
+                width="48"
+              />
+              <img
+                alt="Instagram logo colorful"
+                class="rounded-md object-contain"
+                height="24"
+                loading="lazy"
+                src="https://storage.googleapis.com/a1aa/image/da8f6ebb-b139-4abf-a7fd-dd55bd55b83a.jpg"
+                width="48"
+              />
+              <img
+                alt="Netflix logo red N"
+                class="rounded-md object-contain"
+                height="24"
+                loading="lazy"
+                src="https://storage.googleapis.com/a1aa/image/6efa5621-901d-43f7-3bac-ada050f59c83.jpg"
+                width="48"
+              />
+              <img
+                alt="YouTube logo red play button"
+                class="rounded-md object-contain"
+                height="24"
+                loading="lazy"
+                src="https://storage.googleapis.com/a1aa/image/02d0f945-97ba-4de2-57cd-9507b090f6b6.jpg"
+                width="48"
+              />
+            </div>
+          </section>
+          <!-- Weather -->
+          <section
+            aria-label="Weather"
+            class="bg-[rgba(255,255,255,0.15)] rounded-xl p-4 flex flex-col space-y-3 text-white text-xs w-64"
+          >
+            <div class="flex items-center space-x-2">
+              <img
+                id="weather-icon"
+                alt="Weather icon"
+                class="w-8 h-8 object-contain"
+                src=""
+              />
+              <div class="flex flex-col">
+                <span
+                  id="weather-temp"
+                  class="font-semibold text-lg leading-none"
+                  >--</span
+                >
+                <span id="weather-desc" class="opacity-70">Loading...</span>
+              </div>
+            </div>
+            <div
+              class="grid grid-cols-7 text-[8px] opacity-70 text-center select-none"
+            >
+              <span>S</span><span>M</span><span>T</span><span>W</span
+              ><span>T</span><span>F</span><span>S</span> <span>12</span
+              ><span>13</span><span>14</span><span>15</span><span>16</span
+              ><span>17</span><span>18</span>
+            </div>
+          </section>
+
+          <script>
+            navigator.geolocation.getCurrentPosition(
+              async (pos) => {
+                const { latitude, longitude } = pos.coords;
+                const apiKey = "68af7c1d0535d7eeb1c61fa8abbf2732";
+                const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=${apiKey}`;
+
+                try {
+                  const response = await fetch(url);
+                  const data = await response.json();
+
+                  const iconCode = data.weather[0].icon;
+                  const temperature = Math.round(data.main.temp);
+                  const description = data.weather[0].description;
+
+                  document.getElementById(
+                    "weather-icon"
+                  ).src = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+                  document.getElementById(
+                    "weather-temp"
+                  ).textContent = `${temperature}°C`;
+                  document.getElementById("weather-desc").textContent =
+                    description.charAt(0).toUpperCase() + description.slice(1);
+                } catch (error) {
+                  document.getElementById("weather-desc").textContent =
+                    "Failed to load";
+                  console.error("Weather fetch error:", error);
+                }
+              },
+              () => {
+                document.getElementById("weather-desc").textContent =
+                  "Location denied";
+              }
+            );
+          </script>
+
+          <script>
+            const firebaseConfig = {
+              apiKey: "AIzaSyDYHK6_sVj6h6nMD2ytG2lBzbjb3ho6QBM",
+              authDomain: "smartyurt-7444a.firebaseapp.com",
+              databaseURL:
+                "https://smartyurt-7444a-default-rtdb.firebaseio.com",
+              projectId: "smartyurt-7444a",
+              storageBucket: "smartyurt-7444a.firebasestorage.app",
+              messagingSenderId: "745638072714",
+              appId: "1:745638072714:web:4e75f32b77cf74dcf83873",
+              measurementId: "G-XB04K15CQG",
+            };
+            firebase.initializeApp(firebaseConfig);
+
+            const db = firebase.database();
+
+            function toggleLight(state) {
+              console.log("Toggling light state:", state);
+
+              db.ref("/light")
+                .set(state)
+                .then(() => {
+                  console.log("Light state updated successfully.");
+                })
+                .catch((error) => {
+                  console.error("Error updating light state:", error);
+                });
+            }
+
+            function toggleAC(state) {
+              console.log("Toggling AC state:", state);
+
+              db.ref("/airConditioner")
+                .set(state)
+                .then(() => {
+                  console.log("AC state updated successfully.");
+                })
+                .catch((error) => {
+                  console.error("Error updating AC state:", error);
+                });
+            }
+
+            function toggleCleaner(state) {
+              console.log("Toggling Smart Cleaner state:", state);
+
+              db.ref("/smartCleaner")
+                .set(state)
+                .then(() => {
+                  console.log("Smart Cleaner state updated successfully.");
+                })
+                .catch((error) => {
+                  console.error("Error updating Smart Cleaner state:", error);
+                });
+            }
+
+            function toggleDoor(state) {
+              console.log("Toggling door state:", state);
+
+              db.ref("/door")
+                .set(state)
+                .then(() => {
+                  console.log("Door state updated successfully.");
+                })
+                .catch((error) => {
+                  console.error("Error updating door state:", error);
+                });
+            }
+
+            function toggleTV(state) {
+              console.log("Toggling TV state:", state);
+
+              db.ref("/tv")
+                .set(state)
+                .then(() => {
+                  console.log("TV state updated successfully.");
+                })
+                .catch((error) => {
+                  console.error("Error updating TV state:", error);
+                });
+            }
+
+            db.ref("/temperature").on("value", (snapshot) => {
+              document.getElementById("temp").innerText = snapshot.val();
+            });
+          </script>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
