@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.18.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.18.0/firebase-auth.js"></script>
+  </head>
+  <body
+    class="min-h-screen bg-[url('./ggg.jpg')] bg-cover bg-center flex items-center justify-center"
+  >
+    <div class="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md">
+      <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Sign Up</h2>
+
+      <form id="signup-form" class="space-y-5">
+        <div>
+          <label class="block text-sm font-medium text-gray-600 mb-1">Email</label>
+          <input
+            id="email"
+            type="email"
+            placeholder="you@example.com"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-600 mb-1">Password</label>
+          <input
+            id="password"
+            type="password"
+            placeholder="••••••••"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-600 mb-1">Confirm Password</label>
+          <input
+            id="confirm-password"
+            type="password"
+            placeholder="••••••••"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="w-full bg-blue-400 hover:bg-purple-700 text-white font-semibold py-2 rounded-lg shadow transition-all duration-300"
+        >
+          Sign Up
+        </button>
+      </form>
+
+      <p class="text-center text-sm text-gray-500 mt-6">
+        Already have an account?
+        <a href="login.html" class="text-purple-600 hover:underline">Sign in</a>
+      </p>
+    </div>
+
+    <script>
+      // Firebase Configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyDYHK6_sVj6h6nMD2ytG2lBzbjb3ho6QBM",
+        authDomain: "smartyurt-7444a.firebaseapp.com",
+        databaseURL: "https://smartyurt-7444a-default-rtdb.firebaseio.com",
+        projectId: "smartyurt-7444a",
+        storageBucket: "smartyurt-7444a.firebasestorage.app",
+        messagingSenderId: "745638072714",
+        appId: "1:745638072714:web:4e75f32b77cf74dcf83873",
+        measurementId: "G-XB04K15CQG",
+      };
+
+      // Import Firebase modules
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.18.0/firebase-app.js";
+      import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/9.18.0/firebase-auth.js";
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const provider = new GoogleAuthProvider();
+
+      // Email and Password sign up function
+      const signUp = async (email, password) => {
+        try {
+          await createUserWithEmailAndPassword(auth, email, password);
+          window.location.href = "index.html"; 
+        } catch (error) {
+          alert(error.message); 
+        }
+      };
+
+      // Google sign-up function
+      const googleSignUp = async () => {
+        try {
+          await signInWithPopup(auth, provider);
+          window.location.href = "index.html"; 
+        } catch (error) {
+          alert(error.message); 
+        }
+      };
+
+      // Event listener for sign-up form submission
+      document.getElementById("signup-form").addEventListener("submit", function (event) {
+        event.preventDefault();
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const confirmPassword = document.getElementById("confirm-password").value;
+
+        // Check if passwords match
+        if (password === confirmPassword) {
+          signUp(email, password);
+        } else {
+          alert("Passwords do not match!");
+        }
+      });
+
+      // If you had a Google sign-up button, here's the listener
+      // document.getElementById("google-signup").addEventListener("click", googleSignUp);
+    </script>
+  </body>
+</html>
