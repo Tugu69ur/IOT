@@ -337,74 +337,31 @@
             />
           </section>
 
-          <!-- Air Conditioner -->
+          <!-- Soil moisture -->
           <section
             aria-label="Air Conditioner"
-            class="bg-[rgba(255,255,255,0.15)] rounded-xl p-4 flex flex-col space-y-3"
+            class="bg-[rgba(255,255,255,0.15)] rounded-xl p-4 flex flex-col space-y-2"
           >
             <div class="flex justify-between items-center">
-              <h2 class="text-white font-semibold text-sm">Air Conditioner</h2>
-              <label
-                class="relative inline-flex items-center cursor-pointer"
-                for="ac-toggle"
-              >
-                <input
-                  aria-checked="true"
-                  id="ac-toggle"
-                  class="sr-only peer"
-                  type="checkbox"
-                  onclick="toggleAC(this.checked)"
-                />
-                <div
-                  class="w-11 h-6 bg-gray-400 rounded-full peer peer-checked:bg-green-600 peer-focus:ring-2 peer-focus:ring-green-300 transition"
-                ></div>
-                <div
-                  class="absolute left-0.5 top-0.5 bg-white w-5 h-5 rounded-full transition peer-checked:translate-x-5"
-                ></div>
-              </label>
+              <h2 class="text-white font-semibold text-sm mt-3">
+                Soil Moisture
+              </h2>
             </div>
-            <div class="text-white font-semibold text-4xl leading-none">
-              18°C
+            <div
+              id="soilMoistureValue"
+              class="text-white font-semibold text-4xl leading-none mb-[-30px]"
+            >
+              0%
             </div>
-            <div class="text-white text-xs opacity-70">Current Temperature</div>
-            <div class="flex flex-col space-y-2 mt-2">
-              <div class="flex items-center justify-between">
-                <span class="text-white text-xs opacity-70"> Mode </span>
-                <button
-                  class="bg-black bg-opacity-70 text-white text-xs rounded-md px-2 py-1"
-                >
-                  Cold
-                </button>
-              </div>
-              <div class="flex items-center justify-between">
-                <span class="text-white text-xs opacity-70">
-                  Auto turn on
-                </span>
-                <button
-                  class="bg-black bg-opacity-70 text-white text-xs rounded-md px-2 py-1"
-                >
-                  2:00 AM
-                </button>
-              </div>
-              <div class="flex items-center justify-between">
-                <span class="text-white text-xs opacity-70">
-                  Auto turn off
-                </span>
-                <button
-                  class="bg-black bg-opacity-70 text-white text-xs rounded-md px-2 py-1"
-                >
-                  9:00 AM
-                </button>
-              </div>
-              <div class="flex items-center justify-between">
-                <span class="text-white text-xs opacity-70"> Wind </span>
-                <button
-                  class="bg-black bg-opacity-70 text-white text-xs rounded-md px-2 py-1"
-                >
-                  High
-                </button>
-              </div>
-            </div>
+
+            <img
+              alt="Two copper pendant lamps hanging from ceiling, lit"
+              class="rounded-lg object-contain w-full h-[235px]"
+              height="128"
+              loading="lazy"
+              src="soil.jfif"
+              width="128"
+            />
           </section>
           <!-- Electricity Usage -->
           <section
@@ -730,6 +687,13 @@
             firebase.initializeApp(firebaseConfig);
 
             const db = firebase.database();
+            db.ref("/soilMoisture").on("value", (snapshot) => {
+              const soilVal = snapshot.val();
+              const soilEl = document.getElementById("soilMoistureValue");
+              if (soilEl) {
+                soilEl.innerText = soilVal !== null ? soilVal + "%" : "N/A";
+              }
+            });
 
             function toggleLight(state) {
               console.log("Toggling light state:", state);
