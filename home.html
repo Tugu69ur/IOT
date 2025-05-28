@@ -650,11 +650,9 @@
                 <span id="temp" class="font-semibold text-lg leading-none"
                   >--</span
                 >
-                <span id="weather-desc" class="opacity-70">Loading...</span>
               </div>
             </div>
           </section>
-
           <script>
             navigator.geolocation.getCurrentPosition(
               async (pos) => {
@@ -713,15 +711,22 @@
                 soilEl.innerText = soilVal !== null ? soilVal + "%" : "N/A";
               }
             });
-
-            db.ref("/temperature").on("value", (snapshot) => {
-              const tempValue = snapshot.val();
-              const tempEl = document.getElementById("temp");
-              if (tempEl) {
-                tempEl.innerText = tempValue !== null ? tempValue : "--";
-              }
+            window.addEventListener("DOMContentLoaded", () => {
+              db.ref("/temperature").on("value", (snapshot) => {
+                const tempValue = snapshot.val();
+                console.log("Raw tempValue from DB:", tempValue);
+                const tempEl = document.getElementById("temp");
+                const tempNum = Number(tempValue);
+                if (tempEl && !isNaN(tempNum)) {
+                  const tempCelsius = tempNum - 23.15;
+                  const displayTemp = tempCelsius.toFixed(2);
+                  tempEl.innerText = displayTemp + "°C";
+                  console.log(displayTemp);
+                } else if (tempEl) {
+                  tempEl.innerText = "--";
+                }
+              });
             });
-
             function toggleLight(state) {
               console.log("Toggling light state:", state);
 
@@ -749,10 +754,11 @@
             }
 
             function toggleCleaner(state) {
-              console.log("Toggling Smart Cleaner state:", state);
+              const value = state ? 1 : 0; // convert boolean to 1 or 0
+              console.log("Toggling Smart Cleaner state:", value); // print converted number
 
               db.ref("/waterpump")
-                .set(state)
+                .set(value)
                 .then(() => {
                   console.log("Smart Cleaner state updated successfully.");
                 })
