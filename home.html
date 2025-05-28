@@ -265,12 +265,12 @@
           </section>
           <!-- Smart Cleaner -->
           <section
-            aria-label="Smart Cleaner"
+            aria-label="Water Pump"
             class="bg-[rgba(255,255,255,0.15)] rounded-xl p-3 flex flex-col space-y-2 h-64 text-white text-xs"
           >
             <div class="flex items-center space-x-2">
               <i class="fas fa-robot text-sm"> </i>
-              <span class="font-semibold"> Smart Cleaner </span>
+              <span class="font-semibold"> Water Pump </span>
               <label
                 class="ml-auto relative inline-flex items-center cursor-pointer"
                 for="cleaner-toggle"
@@ -295,7 +295,7 @@
               class="w-full object-contain"
               height="24"
               loading="lazy"
-              src="https://th.bing.com/th/id/OIP.Ot4Dy7_GrDB0MfixcnH-SAHaFj?cb=iwc2&rs=1&pid=ImgDetMain"
+              src="https://www.kdpumps.co.uk/wp-content/uploads/2020/06/irrigation-pumps-uk.jpg"
               width="32"
             />
           </section>
@@ -608,7 +608,7 @@
           <!-- Weather -->
           <section
             aria-label="Weather"
-            class="bg-[rgba(255,255,255,0.15)] rounded-xl p-4 flex flex-col space-y-3 text-white text-xs w-64"
+            class="bg-[rgba(255,255,255,0.15)] rounded-xl p-4 flex flex-col space-y-3 text-white text-xs w-66"
           >
             <div class="flex items-center space-x-2">
               <img
@@ -633,6 +633,25 @@
               ><span>T</span><span>F</span><span>S</span> <span>12</span
               ><span>13</span><span>14</span><span>15</span><span>16</span
               ><span>17</span><span>18</span>
+            </div>
+          </section>
+          <section
+            aria-label="Weather"
+            class="bg-[rgba(255,255,255,0.15)] rounded-xl p-4 flex flex-col space-y-3 text-white text-xs w-66"
+          >
+            <div class="flex items-center space-x-2 mt-3">
+              <img
+                id="weather-icon"
+                alt="Weather icon"
+                class="w-8 h-8 object-contain"
+                src=""
+              />
+              <div class="flex flex-col">
+                <span id="temp" class="font-semibold text-lg leading-none"
+                  >--</span
+                >
+                <span id="weather-desc" class="opacity-70">Loading...</span>
+              </div>
             </div>
           </section>
 
@@ -695,6 +714,14 @@
               }
             });
 
+            db.ref("/temperature").on("value", (snapshot) => {
+              const tempValue = snapshot.val();
+              const tempEl = document.getElementById("temp");
+              if (tempEl) {
+                tempEl.innerText = tempValue !== null ? tempValue : "--";
+              }
+            });
+
             function toggleLight(state) {
               console.log("Toggling light state:", state);
 
@@ -724,7 +751,7 @@
             function toggleCleaner(state) {
               console.log("Toggling Smart Cleaner state:", state);
 
-              db.ref("/smartCleaner")
+              db.ref("/waterpump")
                 .set(state)
                 .then(() => {
                   console.log("Smart Cleaner state updated successfully.");
