@@ -718,7 +718,7 @@
                 const tempEl = document.getElementById("temp");
                 const tempNum = Number(tempValue);
                 if (tempEl && !isNaN(tempNum)) {
-                  const tempCelsius = tempNum - 23.15;
+                  const tempCelsius = tempNum ;
                   const displayTemp = tempCelsius.toFixed(2);
                   tempEl.innerText = displayTemp + "°C";
                   console.log(displayTemp);
